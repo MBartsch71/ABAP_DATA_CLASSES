@@ -17,7 +17,7 @@ ENDCLASS.
 CLASS ltc_table_cell IMPLEMENTATION.
 
   METHOD setup.
-    mo_cut = ycl_table_cell=>new( i_row = 1 i_col = 1 ).
+    mo_cut = ycl_table_cell=>new( row = 1 col = 1 ).
   ENDMETHOD.
 
   METHOD create_cell_at_r1_c1.

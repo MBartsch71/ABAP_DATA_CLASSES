@@ -4,6 +4,7 @@ CLASS ycl_table_cell DEFINITION
   CREATE PRIVATE.
 
   PUBLIC SECTION.
+
     INTERFACES yif_table_cell .
     ALIASES get_row   FOR yif_table_cell~get_row.
     ALIASES get_col   FOR yif_table_cell~get_col.
@@ -12,34 +13,36 @@ CLASS ycl_table_cell DEFINITION
 
     "! <p class="shorttext synchronized" lang="en"></p>
     "! Factory method
-    "! @parameter i_row | Table row <p class="shorttext synchronized" lang="en"></p>
-    "! @parameter i_col | Table col <p class="shorttext synchronized" lang="en"></p>
+    "! @parameter row | Table row <p class="shorttext synchronized" lang="en"></p>
+    "! @parameter col | Table col <p class="shorttext synchronized" lang="en"></p>
     "! @parameter r_result | Table cell object <p class="shorttext synchronized" lang="en"></p>
     CLASS-METHODS new
       IMPORTING
-        i_row           TYPE i
-        i_col           TYPE i
+        row             TYPE i
+        col             TYPE i
       RETURNING
         VALUE(r_result) TYPE REF TO ycl_table_cell.
 
   PRIVATE SECTION.
+
     METHODS constructor
       IMPORTING
-        i_row TYPE i
-        i_col TYPE i.
+        row TYPE i
+        col TYPE i.
 
 ENDCLASS.
 
 
-CLASS ycl_table_cell IMPLEMENTATION.
+
+CLASS YCL_TABLE_CELL IMPLEMENTATION.
 
   METHOD new.
-    r_result = NEW ycl_table_cell( i_row = i_row i_col = i_col ).
+    r_result = NEW ycl_table_cell( row = row col = col ).
   ENDMETHOD.
 
   METHOD constructor.
-    yif_table_cell~row = i_row.
-    yif_table_cell~col = i_col.
+    yif_table_cell~row = row.
+    yif_table_cell~col = col.
   ENDMETHOD.
 
   METHOD yif_table_cell~get_col.
