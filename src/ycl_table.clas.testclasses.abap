@@ -9,6 +9,7 @@ CLASS ltc_table DEFINITION FINAL FOR TESTING
     METHODS create_table_with_3_row_4_cols FOR TESTING.
     METHODS get_all_5_fields_from_2nd_row  FOR TESTING.
     METHODS get_all_4_rows_from_3rd_col    FOR TESTING.
+    methods set_a_value_in_row1_col3       for testing.
 ENDCLASS.
 
 
@@ -44,6 +45,18 @@ CLASS ltc_table IMPLEMENTATION.
         exp = 5
         act = lines( mo_cut->get_row( 2 ) )
         msg = 'Row 2 should contain 5 fields.' ).
+  ENDMETHOD.
+
+  METHOD set_a_value_in_row1_col3.
+    mo_cut = ycl_table=>new( rows = 5 cols = 6 ).
+    mo_cut->set_cell_value( row = 1 col = 3 value = 8 ).
+
+    DATA(valref) = mo_cut->get_cell_value( row = 1 col = 3 ).
+    ASSIGN valref->* TO FIELD-SYMBOL(<value>).
+    cl_abap_unit_assert=>assert_equals(
+        exp = 8
+        act = <value>
+        msg = 'The table cell should contain the expected value' ).
   ENDMETHOD.
 
 ENDCLASS.

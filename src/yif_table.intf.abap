@@ -29,4 +29,27 @@ INTERFACE yif_table
     RETURNING
       VALUE(r_cols) TYPE tt_cells.
 
+  "! <p class="shorttext synchronized" lang="en"></p>
+  "! Get value of requested cell
+  "! @parameter row | Row number <p class="shorttext synchronized" lang="en"></p>
+  "! @parameter col | Column number <p class="shorttext synchronized" lang="en"></p>
+  "! @parameter r_value | Value of the cell <p class="shorttext synchronized" lang="en"></p>
+  METHODS get_cell_value
+    IMPORTING
+      row            TYPE i
+      col            TYPE i
+    RETURNING
+      VALUE(r_value) TYPE REF TO data.
+
+  "! <p class="shorttext synchronized" lang="en"></p>
+  "! Set value of given cell
+  "! @parameter row | Row number <p class="shorttext synchronized" lang="en"></p>
+  "! @parameter col | Column number <p class="shorttext synchronized" lang="en"></p>
+  "! @parameter value | Value to set <p class="shorttext synchronized" lang="en"></p>
+  METHODS set_cell_value
+    IMPORTING
+      row   TYPE i
+      col   TYPE i
+      value TYPE any.
+
 ENDINTERFACE.

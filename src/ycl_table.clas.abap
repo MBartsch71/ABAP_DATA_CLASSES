@@ -6,10 +6,11 @@ CLASS ycl_table DEFINITION
   PUBLIC SECTION.
 
     INTERFACES yif_table .
-
-    ALIASES get_cells FOR yif_table~get_cells.
-    ALIASES get_row   FOR yif_table~get_row.
-    ALIASES get_col   FOR yif_table~get_col.
+    ALIASES get_cells      FOR yif_table~get_cells.
+    ALIASES get_row        FOR yif_table~get_row.
+    ALIASES get_col        FOR yif_table~get_col.
+    ALIASES get_cell_value FOR yif_table~get_cell_value.
+    ALIASES set_cell_value FOR yif_table~set_cell_value.
 
     "! <p class="shorttext synchronized" lang="en"></p>
     "! Factory for Table
@@ -24,8 +25,8 @@ CLASS ycl_table DEFINITION
         VALUE(r_result) TYPE REF TO ycl_table.
 
   PRIVATE SECTION.
-
     DATA mt_cells TYPE yif_table=>tt_cells.
+
     METHODS constructor
       IMPORTING
         rows TYPE i
@@ -61,6 +62,23 @@ CLASS ycl_table IMPLEMENTATION.
     r_rows = VALUE #( FOR <line> IN mt_cells
                           WHERE ( table_line->row = row )
                           ( <line> ) ).
+  ENDMETHOD.
+
+  METHOD yif_table~get_cell_value.
+    r_value = REDUCE #( INIT value = REF #( 0 )
+                        FOR <rowcells> IN get_row( row )
+                        NEXT value = SWITCH #( xsdbool( <rowcells>->get_col( ) = col )
+                                               WHEN abap_true THEN <rowcells>->get_value( )
+                                               ELSE value ) ) .
+  ENDMETHOD.
+
+  METHOD yif_table~set_cell_value.
+    LOOP AT mt_cells ASSIGNING FIELD-SYMBOL(<line>).
+      IF <line>->get_col( ) = col AND <line>->get_row( ) = row.
+        <line>->set_value( value ).
+        EXIT.
+      ENDIF.
+    ENDLOOP.
   ENDMETHOD.
 
 ENDCLASS.
