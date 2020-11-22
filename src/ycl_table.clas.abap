@@ -25,7 +25,7 @@ CLASS ycl_table DEFINITION
         VALUE(r_result) TYPE REF TO ycl_table.
 
   PRIVATE SECTION.
-    DATA mt_cells TYPE yif_table=>tt_cells.
+    DATA cells TYPE yif_table=>tt_cells.
 
     METHODS constructor
       IMPORTING
@@ -43,25 +43,25 @@ CLASS ycl_table IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD constructor.
-    mt_cells = VALUE #( FOR current_row = 1 WHILE current_row < rows + 1
+    cells = VALUE #( FOR current_row = 1 WHILE current_row < rows + 1
                         FOR current_col = 1 WHILE current_col < cols + 1 (
                             ycl_table_cell=>new( row = current_row col = current_col ) ) ).
   ENDMETHOD.
 
   METHOD yif_table~get_cells.
-    r_cells = mt_cells.
+    r_cells = cells.
   ENDMETHOD.
 
   METHOD yif_table~get_col.
-    r_cols = VALUE #( FOR <line> IN mt_cells
+    r_cols = VALUE #( FOR <cell> IN cells
                           WHERE ( table_line->col = col )
-                          ( <line> ) ).
+                          ( <cell> ) ).
   ENDMETHOD.
 
   METHOD yif_table~get_row.
-    r_rows = VALUE #( FOR <line> IN mt_cells
+    r_rows = VALUE #( FOR <cell> IN cells
                           WHERE ( table_line->row = row )
-                          ( <line> ) ).
+                          ( <cell> ) ).
   ENDMETHOD.
 
   METHOD yif_table~get_cell_value.
@@ -73,7 +73,7 @@ CLASS ycl_table IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD yif_table~set_cell_value.
-    LOOP AT mt_cells ASSIGNING FIELD-SYMBOL(<line>).
+    LOOP AT cells ASSIGNING FIELD-SYMBOL(<line>).
       IF <line>->get_col( ) = col AND <line>->get_row( ) = row.
         <line>->set_value( value ).
         EXIT.

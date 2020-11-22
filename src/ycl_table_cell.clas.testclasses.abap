@@ -33,8 +33,10 @@ CLASS ltc_table_cell IMPLEMENTATION.
 
   METHOD populate_a_cell_with_char.
     mo_cut->set_value( 'A' ) .
+
     DATA(valref) = mo_cut->get_value( ).
     ASSIGN valref->* TO FIELD-SYMBOL(<value>).
+
     cl_abap_unit_assert=>assert_equals(
         exp = 'A'
         act = <value>
