@@ -3,7 +3,7 @@ CLASS ltc_table_cell DEFINITION FINAL FOR TESTING
   RISK LEVEL HARMLESS.
 
   PRIVATE SECTION.
-    DATA cut TYPE REF TO ycl_table_cell.
+    DATA mo_cut TYPE REF TO ycl_table_cell.
 
     METHODS setup.
 
@@ -17,26 +17,24 @@ ENDCLASS.
 CLASS ltc_table_cell IMPLEMENTATION.
 
   METHOD setup.
-    cut = ycl_table_cell=>new( row = 1 col = 1 ).
+    mo_cut = ycl_table_cell=>new( row = 1 col = 1 ).
   ENDMETHOD.
 
   METHOD create_cell_at_r1_c1.
     cl_abap_unit_assert=>assert_equals(
         exp = 1
-        act = cut->get_row( )
-        msg = 'The row number of cell should be 1'
-        quit = cl_aunit_assert=>no ).
+        act = mo_cut->get_row( )
+        msg = 'The row number of cell should be 1' ).
     cl_abap_unit_assert=>assert_equals(
         exp = 1
-        act = cut->get_col(  )
-        msg = 'The column number of the cell should be 1.'
-        quit = cl_aunit_assert=>no ).
+        act = mo_cut->get_col(  )
+        msg = 'The column number of the cell should be 1.' ).
   ENDMETHOD.
 
   METHOD populate_a_cell_with_char.
-    cut->set_value( 'A' ) .
+    mo_cut->set_value( 'A' ) .
 
-    DATA(valref) = cut->get_value( ).
+    DATA(valref) = mo_cut->get_value( ).
     ASSIGN valref->* TO FIELD-SYMBOL(<value>).
 
     cl_abap_unit_assert=>assert_equals(
@@ -46,8 +44,8 @@ CLASS ltc_table_cell IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD populate_a_cell_with_int.
-    cut->set_value( 15 ).
-    DATA(valref) = cut->get_value( ).
+    mo_cut->set_value( 15 ).
+    DATA(valref) = mo_cut->get_value( ).
     ASSIGN valref->* TO FIELD-SYMBOL(<value>).
     cl_abap_unit_assert=>assert_equals(
         exp = 15
@@ -56,8 +54,8 @@ CLASS ltc_table_cell IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD populate_a_cell_with_string.
-    cut->set_value( |Teststring| ).
-    DATA(valref) = cut->get_value( ).
+    mo_cut->set_value( |Teststring| ).
+    DATA(valref) = mo_cut->get_value( ).
     ASSIGN valref->* TO FIELD-SYMBOL(<value>).
     cl_abap_unit_assert=>assert_equals(
         exp = |Teststring|

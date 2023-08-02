@@ -1,5 +1,4 @@
-INTERFACE yif_mbh_iterator
-  PUBLIC .
+INTERFACE yif_mbh_iterator PUBLIC.
 
   METHODS get_index RETURNING VALUE(result) TYPE i.
 

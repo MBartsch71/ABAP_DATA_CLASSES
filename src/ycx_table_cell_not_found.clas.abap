@@ -1,12 +1,13 @@
-CLASS ycx_table_cell_not_found DEFINITION INHERITING FROM cx_no_check
-  PUBLIC
-  CREATE PUBLIC .
+class YCX_TABLE_CELL_NOT_FOUND definition
+  public
+  create private .
 
-  PUBLIC SECTION.
-  PROTECTED SECTION.
-  PRIVATE SECTION.
+public section.
+protected section.
+private section.
 ENDCLASS.
 
 
-CLASS ycx_table_cell_not_found IMPLEMENTATION.
+
+CLASS YCX_TABLE_CELL_NOT_FOUND IMPLEMENTATION.
 ENDCLASS.
