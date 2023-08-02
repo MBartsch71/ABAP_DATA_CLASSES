@@ -6,21 +6,23 @@ CLASS ycl_mbh_integer DEFINITION
     CLASS-METHODS create IMPORTING value         TYPE i
                          RETURNING VALUE(result) TYPE REF TO ycl_mbh_integer.
 
-    METHODS value RETURNING VALUE(result) TYPE integer.
+    METHODS constructor IMPORTING internal_value TYPE i.
 
-  PROTECTED SECTION.
+    METHODS value RETURNING VALUE(result) TYPE integer.
 
   PRIVATE SECTION.
     DATA internal_value TYPE i.
+
 ENDCLASS.
-
-
 
 CLASS ycl_mbh_integer IMPLEMENTATION.
 
+  METHOD constructor.
+    me->internal_value = internal_value.
+  ENDMETHOD.
+
   METHOD create.
-    result = NEW ycl_mbh_integer( ).
-    result->internal_value = value.
+    result = NEW ycl_mbh_integer( value ).
   ENDMETHOD.
 
   METHOD value.

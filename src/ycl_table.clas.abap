@@ -1,10 +1,8 @@
 CLASS ycl_table DEFINITION
   PUBLIC
-  FINAL
   CREATE PRIVATE .
 
   PUBLIC SECTION.
-
     INTERFACES yif_table .
     ALIASES get_cells      FOR yif_table~get_cells.
     ALIASES get_row        FOR yif_table~get_row.
@@ -16,69 +14,61 @@ CLASS ycl_table DEFINITION
     "! Factory for Table
     "! @parameter rows | Required rows <p class="shorttext synchronized" lang="en"></p>
     "! @parameter cols | Required columns <p class="shorttext synchronized" lang="en"></p>
-    "! @parameter r_result | Table object <p class="shorttext synchronized" lang="en"></p>
-    CLASS-METHODS new
-      IMPORTING
-        rows            TYPE i
-        cols            TYPE i
-      RETURNING
-        VALUE(r_result) TYPE REF TO ycl_table.
+    "! @parameter result | Table object <p class="shorttext synchronized" lang="en"></p>
+    CLASS-METHODS new IMPORTING rows          TYPE i
+                                cols          TYPE i
+                      RETURNING VALUE(result) TYPE REF TO ycl_table.
 
   PRIVATE SECTION.
-    DATA cells TYPE yif_table=>tt_cells.
+    DATA cell_map TYPE yif_table=>cell_map.
 
-    METHODS constructor
-      IMPORTING
-        rows TYPE i
-        cols TYPE i.
+    METHODS constructor IMPORTING rows TYPE i
+                                  cols TYPE i.
 
 ENDCLASS.
-
-
 
 CLASS ycl_table IMPLEMENTATION.
 
   METHOD new.
-    r_result = NEW ycl_table( rows = rows cols = cols ).
+    result = NEW ycl_table( rows = rows cols = cols ).
   ENDMETHOD.
 
   METHOD constructor.
-    cells = VALUE #( FOR current_row = 1 WHILE current_row < rows + 1
-                        FOR current_col = 1 WHILE current_col < cols + 1 (
-                            ycl_table_cell=>new( row = current_row col = current_col ) ) ).
+    cell_map = VALUE #( FOR current_row = 1 WHILE current_row <= rows
+                        FOR current_col = 1 WHILE current_col <= cols
+                       (  row = current_row
+                          col = current_col
+                          cell = ycl_table_cell=>new( row = current_row col = current_col ) ) ).
   ENDMETHOD.
 
   METHOD yif_table~get_cells.
-    r_cells = cells.
+    result = cell_map.
   ENDMETHOD.
 
   METHOD yif_table~get_col.
-    r_cols = VALUE #( FOR <cell> IN cells
-                          WHERE ( table_line->col = col )
-                          ( <cell> ) ).
+    result = VALUE #( FOR cell IN cell_map USING KEY sort_by_col WHERE ( col = col )
+                          ( cell ) ).
   ENDMETHOD.
 
   METHOD yif_table~get_row.
-    r_rows = VALUE #( FOR <cell> IN cells
-                          WHERE ( table_line->row = row )
-                          ( <cell> ) ).
+    result = VALUE #( FOR cell IN cell_map WHERE ( row = row )
+                          ( cell ) ).
   ENDMETHOD.
 
   METHOD yif_table~get_cell_value.
-    r_value = REDUCE #( INIT value = REF #( 0 )
-                        FOR <rowcells> IN get_row( row )
-                        NEXT value = SWITCH #( xsdbool( <rowcells>->get_col( ) = col )
-                                               WHEN abap_true THEN <rowcells>->get_value( )
-                                               ELSE value ) ) .
+    TRY.
+        result = cell_map[ col = col row = row ]-cell->get_value( ).
+      CATCH cx_sy_itab_line_not_found.
+        RAISE EXCEPTION NEW ycx_table_cell_not_found( ).
+    ENDTRY.
   ENDMETHOD.
 
   METHOD yif_table~set_cell_value.
-    LOOP AT cells ASSIGNING FIELD-SYMBOL(<line>).
-      IF <line>->get_col( ) = col AND <line>->get_row( ) = row.
-        <line>->set_value( value ).
-        EXIT.
-      ENDIF.
-    ENDLOOP.
+    TRY.
+        cell_map[ col = col row = row ]-cell->set_value( value ).
+      CATCH cx_sy_itab_line_not_found.
+        RAISE EXCEPTION NEW ycx_table_cell_not_found( ).
+    ENDTRY.
   ENDMETHOD.
 
 ENDCLASS.
