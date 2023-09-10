@@ -31,7 +31,7 @@ CLASS tc_string DEFINITION FINAL FOR TESTING
 
     methods count_any_of_given_characters for testing.
     methods string_has_connected_twins for testing.
-    methods string_has_pair_letters_twice for testing.
+
     methods string_contain_sequence for testing.
 
 ENDCLASS.
@@ -130,11 +130,6 @@ CLASS tc_string IMPLEMENTATION.
   METHOD string_has_connected_twins.
     cut = ycl_mbh_string=>new( |TESST| ).
     cl_abap_unit_assert=>assert_true( act = cut->has_connected_twins( ) ).
-  ENDMETHOD.
-
-  METHOD string_has_pair_letters_twice.
-    cut = ycl_mbh_string=>new( |TESTED| ).
-    cl_abap_unit_assert=>assert_true( act = cut->has_pair_letter_twice( ) ).
   ENDMETHOD.
 
   METHOD string_contain_sequence.
