@@ -1,6 +1,5 @@
 CLASS ycl_table DEFINITION
   PUBLIC
-  FINAL
   CREATE PRIVATE .
 
   PUBLIC SECTION.
@@ -16,30 +15,24 @@ CLASS ycl_table DEFINITION
     "! Factory for Table
     "! @parameter rows | Required rows <p class="shorttext synchronized" lang="en"></p>
     "! @parameter cols | Required columns <p class="shorttext synchronized" lang="en"></p>
-    "! @parameter r_result | Table object <p class="shorttext synchronized" lang="en"></p>
-    CLASS-METHODS new
-      IMPORTING
-        rows            TYPE i
-        cols            TYPE i
-      RETURNING
-        VALUE(r_result) TYPE REF TO ycl_table.
+    "! @parameter result | Table object <p class="shorttext synchronized" lang="en"></p>
+    CLASS-METHODS new IMPORTING rows            TYPE i
+                                cols            TYPE i
+                      RETURNING VALUE(result) TYPE REF TO ycl_table.
 
   PRIVATE SECTION.
     DATA cells TYPE yif_table=>tt_cells.
 
-    METHODS constructor
-      IMPORTING
-        rows TYPE i
-        cols TYPE i.
+    METHODS constructor IMPORTING rows TYPE i
+                                  cols TYPE i.
 
 ENDCLASS.
-
 
 
 CLASS ycl_table IMPLEMENTATION.
 
   METHOD new.
-    r_result = NEW ycl_table( rows = rows cols = cols ).
+    result = NEW ycl_table( rows = rows cols = cols ).
   ENDMETHOD.
 
   METHOD constructor.
@@ -49,23 +42,23 @@ CLASS ycl_table IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD yif_table~get_cells.
-    r_cells = cells.
+    result = cells.
   ENDMETHOD.
 
   METHOD yif_table~get_col.
-    r_cols = VALUE #( FOR <cell> IN cells
+    result = VALUE #( FOR <cell> IN cells
                           WHERE ( table_line->col = col )
                           ( <cell> ) ).
   ENDMETHOD.
 
   METHOD yif_table~get_row.
-    r_rows = VALUE #( FOR <cell> IN cells
+    result = VALUE #( FOR <cell> IN cells
                           WHERE ( table_line->row = row )
                           ( <cell> ) ).
   ENDMETHOD.
 
   METHOD yif_table~get_cell_value.
-    r_value = REDUCE #( INIT value = REF #( 0 )
+    result = REDUCE #( INIT value = REF #( 0 )
                         FOR <rowcells> IN get_row( row )
                         NEXT value = SWITCH #( xsdbool( <rowcells>->get_col( ) = col )
                                                WHEN abap_true THEN <rowcells>->get_value( )
