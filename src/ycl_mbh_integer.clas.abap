@@ -8,12 +8,9 @@ CLASS ycl_mbh_integer DEFINITION
 
     METHODS value RETURNING VALUE(result) TYPE integer.
 
-  PROTECTED SECTION.
-
   PRIVATE SECTION.
     DATA internal_value TYPE i.
 ENDCLASS.
-
 
 
 CLASS ycl_mbh_integer IMPLEMENTATION.

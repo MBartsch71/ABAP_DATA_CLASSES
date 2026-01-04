@@ -42,22 +42,16 @@ CLASS ycl_mbh_string DEFINITION
                               RETURNING VALUE(result) TYPE REF TO ycl_mbh_string.
 
     METHODS get_iterator RETURNING VALUE(result) TYPE REF TO yif_mbh_iterator.
-    METHODS count_characters
-      IMPORTING
-        characters    TYPE REF TO ycl_mbh_string
-      RETURNING
-        VALUE(result) TYPE i.
-    METHODS has_pair_letter_twice
-      RETURNING
-        VALUE(result) TYPE abap_bool.
-    METHODS contain_sequence
-      IMPORTING
-        sequence      TYPE string
-      RETURNING
-        VALUE(result) TYPE abap_bool.
-    METHODS has_connected_twins
-      RETURNING
-        VALUE(result) TYPE abap_bool.
+
+    METHODS count_characters IMPORTING characters    TYPE REF TO ycl_mbh_string
+                             RETURNING VALUE(result) TYPE i.
+
+    METHODS has_pair_letter_twice RETURNING VALUE(result) TYPE abap_bool.
+
+    METHODS contain_sequence IMPORTING sequence      TYPE string
+                             RETURNING VALUE(result) TYPE abap_bool.
+
+    METHODS has_connected_twins RETURNING VALUE(result) TYPE abap_bool.
 
   PRIVATE SECTION.
     DATA internal_value TYPE string.
@@ -78,28 +72,23 @@ ENDCLASS.
 
 
 
-CLASS YCL_MBH_STRING IMPLEMENTATION.
-
+CLASS ycl_mbh_string IMPLEMENTATION.
 
   METHOD capitalize.
     result = NEW #( |{ to_upper( head( ) ) }{ to_lower( tail( ) ) }| ).
   ENDMETHOD.
 
-
   METHOD concatentate_with.
     result = NEW #( |{ internal_value }{ string }| ).
   ENDMETHOD.
-
 
   METHOD constructor.
     me->internal_value = internal_value.
   ENDMETHOD.
 
-
   METHOD contain_sequence.
     result = xsdbool( internal_value CS sequence ).
   ENDMETHOD.
-
 
   METHOD count_characters.
     DATA(iterator) = CAST ycl_mbh_string_iterator( characters->get_iterator( ) ).
@@ -110,7 +99,6 @@ CLASS YCL_MBH_STRING IMPLEMENTATION.
     ENDWHILE.
   ENDMETHOD.
 
-
   METHOD get_char_at.
     DATA(offset) = COND i( WHEN position < 0 THEN size( ) + position
                            WHEN position = 0 THEN 0
@@ -118,16 +106,13 @@ CLASS YCL_MBH_STRING IMPLEMENTATION.
     result = substring( val = internal_value off = offset len = 1 ).
   ENDMETHOD.
 
-
   METHOD get_half_pos.
     result = size( ) / 2.
   ENDMETHOD.
 
-
   METHOD get_iterator.
     result = NEW ycl_mbh_string_iterator( me ).
   ENDMETHOD.
-
 
   METHOD get_substring.
     DATA(starting_pos) = from - 1.
@@ -135,13 +120,11 @@ CLASS YCL_MBH_STRING IMPLEMENTATION.
     result = NEW #( |{ substring( val = internal_value off = starting_pos len = length ) }| ).
   ENDMETHOD.
 
-
   METHOD halve.
     result = COND #( WHEN string_length_is_even( )
                        THEN split_directly( )
                        ELSE split_before_half( ) ).
   ENDMETHOD.
-
 
   METHOD has_connected_twins.
     DATA preceeded_string TYPE REF TO ycl_mbh_string.
@@ -159,9 +142,8 @@ CLASS YCL_MBH_STRING IMPLEMENTATION.
     ENDWHILE.
   ENDMETHOD.
 
-
   METHOD has_pair_letter_twice.
-    DATA position TYPE i value 1.
+    DATA position TYPE i VALUE 1.
     DATA preceeding_pair TYPE char2.
 
     DATA(last_read_pos) = strlen( internal_value ) - 2.
@@ -176,41 +158,33 @@ CLASS YCL_MBH_STRING IMPLEMENTATION.
     ENDWHILE.
   ENDMETHOD.
 
-
   METHOD head.
     result = internal_value(1).
   ENDMETHOD.
-
 
   METHOD is_equal_to_ignore_case.
     result = xsdbool( me->uppercase( )->value( ) = input->uppercase( )->value( ) ).
   ENDMETHOD.
 
-
   METHOD is_equal_to_respect_case.
     result = xsdbool( internal_value = input->internal_value ).
   ENDMETHOD.
-
 
   METHOD lowercase.
     result = NEW #( |{ to_lower( internal_value ) }| ).
   ENDMETHOD.
 
-
   METHOD new.
     result = NEW #( content ).
   ENDMETHOD.
-
 
   METHOD reverse_me.
     result = NEW #( |{ reverse( internal_value ) }| ).
   ENDMETHOD.
 
-
   METHOD size.
     result = strlen( internal_value ).
   ENDMETHOD.
-
 
   METHOD split_before_half.
     DATA(half) = get_half_pos( ).
@@ -218,34 +192,28 @@ CLASS YCL_MBH_STRING IMPLEMENTATION.
                       ( substring( val = internal_value off = half - 1 len = half ) ) ).
   ENDMETHOD.
 
-
   METHOD split_directly.
     DATA(half) = get_half_pos( ).
     result = VALUE #( ( substring( val = internal_value off = 0 len = half ) )
                       ( substring( val = internal_value off = half len = half ) ) ).
   ENDMETHOD.
 
-
   METHOD split_string.
     result = VALUE #( ( substring( val = internal_value off = 0 len = at ) )
                       ( substring( val = internal_value off = at len = strlen( internal_value ) - at ) ) ).
   ENDMETHOD.
 
-
   METHOD string_length_is_even.
     result = xsdbool( get_half_pos( ) MOD 2 = 0 ).
   ENDMETHOD.
-
 
   METHOD tail.
     result = substring( val = internal_value off = 1 len = size( ) - 1 ).
   ENDMETHOD.
 
-
   METHOD uppercase.
     result = NEW #( |{ to_upper( internal_value ) }| ).
   ENDMETHOD.
-
 
   METHOD value.
     result = internal_value.

@@ -23,40 +23,32 @@ CLASS ycl_mbh_stringtab_iterator DEFINITION
 ENDCLASS.
 
 
-
 CLASS YCL_MBH_STRINGTAB_ITERATOR IMPLEMENTATION.
-
 
   METHOD collection_size.
     result = lines( collection ).
   ENDMETHOD.
 
-
   METHOD constructor.
     me->collection = content.
   ENDMETHOD.
-
 
   METHOD get_content.
     result = collection.
   ENDMETHOD.
 
-
   METHOD increase_index.
     current_index = current_index + 1.
   ENDMETHOD.
-
 
   METHOD yif_mbh_iterator~get_index.
     result = current_index.
   ENDMETHOD.
 
-
   METHOD yif_mbh_iterator~get_next.
     increase_index( ).
     result = ycl_mbh_string=>new( collection[ current_index ] ).
   ENDMETHOD.
-
 
   METHOD yif_mbh_iterator~has_next.
     result = xsdbool( current_index < collection_size( ) ).
